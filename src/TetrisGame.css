@@ -1,0 +1,25 @@
+.brick{
+    height:auto;
+    background-color: black;
+    border-style: solid;
+    border-width: 1px;
+    border-color: white;
+}
+
+.white-brick{
+    height:auto;
+    background-color: white;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+}
+
+.game-board{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+    margin: auto;
+    width: 300px;
+    height: 600px;
+    background-color: black;
+    
+}
