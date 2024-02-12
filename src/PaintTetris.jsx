@@ -5,9 +5,27 @@ export default function PaintTetris(props){
     let allBrick = [];
     for(let i=0;i<props.board.length;i++)
     {
+        let check = true;
         for(let j=0;j<props.board[i].length;j++)
         {
-            allBrick.push(<div key={i+","+j} className="brick"></div>)
+            if(props.board[i][j] === 0 )
+            {
+                check = false;
+                break;
+            }
+        }
+        for(let j=0;j<props.board[i].length;j++)
+        {
+            if(props.board[i][j] == 0)
+                allBrick.push(<div key={i+","+j} className="brick"></div>)
+            else
+            {
+                
+                if(check === true)
+                    allBrick.push(<div key={i+","+j} className="clean-brick "></div>)
+                else
+                    allBrick.push(<div key={i+","+j} className="white-brick "></div>)
+            }
         }
     }
 
@@ -15,9 +33,12 @@ export default function PaintTetris(props){
     {
         const rowIndex = props.nowBrick[i][0];
         const colIndex = props.nowBrick[i][1];
-        const index = 10 * rowIndex + colIndex;
-        allBrick[index] = (<div key={index} className="white-brick"></div>);
-        console.log(rowIndex,colIndex)
+        if(props.board[rowIndex][colIndex] === 0)
+        {
+            const index = 10 * rowIndex + colIndex;
+            allBrick[index] = (<div key={index} className="white-brick"></div>);
+        }
+        //console.log(rowIndex,colIndex)
     }
 
     //console.log(props.board)

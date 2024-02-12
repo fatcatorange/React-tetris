@@ -12,7 +12,18 @@
     border-style: solid;
     border-width: 1px;
     border-color: black;
+    transition-duration: 1s;
 }
+
+
+.clean-brick{
+    height:auto;
+    border-style: solid;
+    border-width: 1px;
+    border-color: black;
+    animation: fadeInAnimation 1s ;
+}
+
 
 .game-board{
     display: grid;
@@ -21,5 +32,22 @@
     width: 300px;
     height: 600px;
     background-color: black;
+    border-style: solid;
+    border-color: black;
     
+}
+
+@keyframes fadeInAnimation {
+    0% {
+      background-color: white;
+      border-color: black;
+    }
+    100% {
+      background-color: black;
+      border-color: white;
+    }
+  }
+
+.visible{
+    opacity: 1;
 }
