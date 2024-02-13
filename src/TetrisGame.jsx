@@ -17,11 +17,12 @@ export default function TetrisGame(){
         return tempBoard
     });
 
-    const [nowBrick,setNowBrick] = React.useState([[0,4],[1,4],[2,4],[2,5]])
+    const [nowBrick,setNowBrick] = React.useState([[0,5],[1,4],[1,5],[1,6]])
     const [cleaning,setCleaning] = React.useState(false)
     const [brickType,setBrickType] = React.useState([[[0,5],[1,5],[2,5],[3,5]],[[0,4],[0,5],[1,4],[1,5]],
-        [[0,5],[1,5],[2,5],[2,4]],[[0,4],[1,4],[2,4],[2,5]],[[0,4],[0,5],[1,4],[1,3]],[[0,4],[0,5],[1,5],[1,6]],[[1,4],[1,5],[1,6],[0,5]]])
-    const [nowBrickType,setNowBrickType] = React.useState(3)
+        [[0,5],[1,5],[2,5],[2,4]],[[0,4],[1,4],[2,4],[2,5]],
+        [[0,5],[0,4],[1,4],[1,3]],[[0,4],[0,5],[1,5],[1,6]],[[0,5],[1,4],[1,5],[1,6]]])
+    const [nowBrickType,setNowBrickType] = React.useState(6)
     const [nowBrickDir,setNowBrickDir] = React.useState(0)
     const [canRotate,setCanRotate] = React.useState(true)
 
@@ -55,7 +56,7 @@ export default function TetrisGame(){
     function setDownBrick(){
         for(let i=0;i<nowBrick.length;i++)
         {
-            board[nowBrick[i][0]][nowBrick[i][1]] = 1;
+            board[nowBrick[i][0]][nowBrick[i][1]] = nowBrickType + 1;
         }
         //console.log(board)
         
@@ -381,6 +382,196 @@ export default function TetrisGame(){
         }
     }
 
+    function SbrickRoatate(prev)
+    {
+        const nowDir = nowBrickDir;
+        if(nowBrickDir%2 === 0)
+        {
+            const checkBrick = prev.map((element,index) => {
+                if(index === 0)
+                {
+                    return [element[0]+2,element[1]];
+                }
+                else if(index === 1)
+                {
+                    return [element[0]+1,element[1]+1];
+                }
+                else if(index === 2)
+                {
+                    return element;
+                }
+                else
+                {
+                    return [element[0]-1,element[1]+1];
+                }
+            })
+            return checkValidRotate(prev,checkBrick,nowDir)
+        }
+        else
+        {
+            const checkBrick = prev.map((element,index) => {
+                if(index === 0)
+                {
+                    return [element[0]-2,element[1]];
+                }
+                else if(index === 1)
+                {
+                    return [element[0]-1,element[1]-1];
+                }
+                else if(index === 2)
+                {
+                    return element;
+                }
+                else
+                {
+                    return [element[0]+1,element[1]-1];
+                }
+            })
+            return checkValidRotate(prev,checkBrick,nowDir)
+        }
+    }
+
+    function ZbrickRoatate(prev)
+    {
+        const nowDir = nowBrickDir;
+        if(nowBrickDir%2 === 0)
+        {
+            const checkBrick = prev.map((element,index) => {
+                if(index === 0)
+                {
+                    return [element[0],element[1]+2];
+                }
+                else if(index === 1)
+                {
+                    return [element[0]+1,element[1]+1];
+                }
+                else if(index === 2)
+                {
+                    return element;
+                }
+                else
+                {
+                    return [element[0]+1,element[1]-1];
+                }
+            })
+            return checkValidRotate(prev,checkBrick,nowDir)
+        }
+        else
+        {
+            const checkBrick = prev.map((element,index) => {
+                if(index === 0)
+                {
+                    return [element[0],element[1]-2];
+                }
+                else if(index === 1)
+                {
+                    return [element[0]-1,element[1]-1];
+                }
+                else if(index === 2)
+                {
+                    return element;
+                }
+                else
+                {
+                    return [element[0]-1,element[1]+1];
+                }
+            })
+            return checkValidRotate(prev,checkBrick,nowDir)
+        }
+    }
+    
+    function TbrickRotate(prev){
+        const nowDir = nowBrickDir;
+        if(nowBrickDir%4 === 0)
+        {
+            const checkBrick = prev.map((element,index) => {
+                if(index === 0)
+                {
+                    return [element[0]+1,element[1]+1];
+                }
+                else if(index === 1)
+                {
+                    return [element[0]-1,element[1]+1];
+                }
+                else if(index === 2)
+                {
+                    return element;
+                }
+                else
+                {
+                    return [element[0]+1,element[1]-1];
+                }
+            })
+            return checkValidRotate(prev,checkBrick,nowDir)
+        }
+        else if(nowBrickDir%4 === 1)
+        {
+            const checkBrick = prev.map((element,index) => {
+                if(index === 0)
+                {
+                    return [element[0]+1,element[1]-1];
+                }
+                else if(index === 1)
+                {
+                    return [element[0]+1,element[1]+1];
+                }
+                else if(index === 2)
+                {
+                    return element;
+                }
+                else
+                {
+                    return [element[0]-1,element[1]-1];
+                }
+            })
+            return checkValidRotate(prev,checkBrick,nowDir)
+        }
+        else if(nowBrickDir%4 === 2)
+        {
+            const checkBrick = prev.map((element,index) => {
+                if(index === 0)
+                {
+                    return [element[0]-1,element[1]-1];
+                }
+                else if(index === 1)
+                {
+                    return [element[0]+1,element[1]-1];
+                }
+                else if(index === 2)
+                {
+                    return element;
+                }
+                else
+                {
+                    return [element[0]-1,element[1]+1];
+                }
+            })
+            return checkValidRotate(prev,checkBrick,nowDir)
+        }
+        else
+        {
+            const checkBrick = prev.map((element,index) => {
+                if(index === 0)
+                {
+                    return [element[0]-1,element[1]+1];
+                }
+                else if(index === 1)
+                {
+                    return [element[0]-1,element[1]-1];
+                }
+                else if(index === 2)
+                {
+                    return element;
+                }
+                else
+                {
+                    return [element[0]+1,element[1]+1];
+                }
+            })
+            return checkValidRotate(prev,checkBrick,nowDir)
+        }
+    }
+
     function rotateBrick(){
         setNowBrick((prev)=>{
             if(nowBrickType === 0)
@@ -398,6 +589,18 @@ export default function TetrisGame(){
             else if(nowBrickType === 3)
             {
                 return LbrickRotate(prev)
+            }
+            else if(nowBrickType === 4)
+            {
+                return SbrickRoatate(prev)
+            }
+            else if(nowBrickType === 5)
+            {
+                return ZbrickRoatate(prev)
+            }
+            else if(nowBrickType === 6)
+            { 
+                return TbrickRotate(prev)
             }
         })
     }
@@ -478,7 +681,7 @@ export default function TetrisGame(){
 
     return (
         <div>
-            <PaintTetris board  = {board} nowBrick = {nowBrick}/>
+            <PaintTetris board  = {board} nowBrick = {nowBrick} nowBrickType = {nowBrickType}/>
         </div>
     )
 }
