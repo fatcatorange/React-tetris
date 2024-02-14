@@ -1,6 +1,8 @@
 import React from "react";
 import PaintTetris from "./PaintTetris";
 import './TetrisGame.css'
+import PaintNextBrick from "./PaintNextBrick";
+import PaintScore from "./PaintScore";
 
 export default function TetrisGame(){
     const [board,setBoard] = React.useState(()=>{
@@ -24,17 +26,18 @@ export default function TetrisGame(){
         [[0,5],[0,4],[1,4],[1,3]],[[0,4],[0,5],[1,5],[1,6]],[[0,5],[1,4],[1,5],[1,6]]])
     const [nowBrickType,setNowBrickType] = React.useState(6)
     const [nowBrickDir,setNowBrickDir] = React.useState(0)
+    const [nextBrick,setNextBrick] = React.useState(1)
     const [canRotate,setCanRotate] = React.useState(true)
+    const [downMove,setDownMove] = React.useState(true)
+    const [score,setScore] = React.useState(0)
+    const [clearLine,setClearLine] = React.useState(0)
+    const [level,setLevel] = React.useState(1)
+    const downMoveTime = 500
+    const minimumDownSpeed = 100
+    const maximumDownSpeed = 1000;
 
-
-    let intervalID = ""
     React.useEffect(()=>{
-            if(intervalID !== "")
-            {
-                return;
-            }
-            clearInterval(intervalID)
-            intervalID = setInterval(function(){
+            const intervalID = setInterval(function(){
                 setCleaning((prev) => {
                     if(prev === false)
                     {
@@ -42,8 +45,9 @@ export default function TetrisGame(){
                     }
                     return prev;
                 })
-        },400)
-    },[])
+        },Math.max(maximumDownSpeed - ((level-1) * 100),minimumDownSpeed))
+        return ()=>clearInterval(intervalID)
+    },[level])
     
 
     function dropBrick(){
@@ -54,10 +58,14 @@ export default function TetrisGame(){
     }
     
     function setDownBrick(){
-        for(let i=0;i<nowBrick.length;i++)
-        {
-            board[nowBrick[i][0]][nowBrick[i][1]] = nowBrickType + 1;
-        }
+        setNowBrick((prev)=>{
+            for(let i=0;i<nowBrick.length;i++)
+            {
+                board[prev[i][0]][prev[i][1]] = nowBrickType + 1;
+            }
+            return prev
+        })
+        
         //console.log(board)
         
     }
@@ -71,39 +79,58 @@ export default function TetrisGame(){
             if((nowBrick[i][0] === 19 || board[nowBrick[i][0] + 1][nowBrick[i][1]] !== 0) && cleaning === false)
             {
                 setCleaning(true)
-                setDownBrick();
-                setTimeout(setNewBrick,1000)
+                setTimeout(setNewBrick,downMoveTime)
                 break;
             }
         }
     }
 
     function setNewBrick(){
-        cleanBrick();
-        setNowBrick(generateNewBrick());
-        setCleaning(false)
+        setNowBrick((prev)=>{
+            for(let i=0;i<prev.length;i++)
+            {
+                if((prev[i][0] === 19 || board[prev[i][0] + 1][prev[i][1]] !== 0) )
+                {
+                    setDownBrick();
+                    setDownMove(false)
+                    setTimeout(()=>{
+                        cleanBrick();
+                        setNowBrick(generateNewBrick());
+                        setCleaning(false)
+                        setDownMove(true)
+                    },500)  
+                    return prev
+                }
+            }
+            setCleaning(false)
+            setDownMove(true)
+            return prev
+        })
+
+
+
     }
 
     function generateNewBrick(){
         //console.log(brickType)
         const randomNumber = Math.floor(Math.random() * brickType.length);
-        setNowBrickType(randomNumber)
+        setNowBrickType(nextBrick)
+        const temp = brickType[nextBrick].map(element=>(element))
+        setNextBrick(randomNumber)
         setNowBrickDir(0)
-        const temp = brickType[randomNumber].map(element=>(element))
         return temp;
     }
     
 
     React.useEffect(() => {
         const handleKeyDown = (event) => {
-          if (event.key === "ArrowUp" && canRotate === true) {
-            console.log(nowBrickDir)
+          if (event.key === "ArrowUp" ) {
             rotateBrick();
           } else if (event.key === "ArrowDown" && cleaning === false) {
             moveDown();
-          } else if (event.key === "ArrowLeft" && cleaning === false ) {
+          } else if (event.key === "ArrowLeft" && downMove === true) {
             moveLeft();
-          } else if (event.key === "ArrowRight" && cleaning === false) {
+          } else if (event.key === "ArrowRight" && downMove === true) {
             moveRight();
           }
         };
@@ -112,10 +139,9 @@ export default function TetrisGame(){
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
         };
-    }, [nowBrick,cleaning,nowBrickDir,nowBrickType]);
+    }, [nowBrick,cleaning,nowBrickDir,nowBrickType,downMove]);
 
     function checkValidRotate(prev,temp,nowBrickDir){
-        console.log(prev,temp)
         for(let i=0;i<4;i++)
             {
                 if(temp[i][1] < 0 || temp[i][1] > 9 || temp[i][0] >= 19 ||
@@ -635,6 +661,7 @@ export default function TetrisGame(){
             return temp;
         })
     }  
+    
     function moveDown(){
         setNowBrick((prev)=>{
             let temp = prev.map((element)=>[...element]);
@@ -665,6 +692,7 @@ export default function TetrisGame(){
                     newBoard.push(prev[i]);
                 }
             }
+            addScore(20 - newBoard.length)
             while(newBoard.length < 20)
             {
                 let temp = []
@@ -679,9 +707,48 @@ export default function TetrisGame(){
         
     }
 
+    function addScore(clearLine){
+        if(clearLine === 0)
+        {
+            return;
+        }
+        setClearLine((prev)=>{
+            const newClearLine = prev + clearLine;
+            if(newClearLine >= level * 10)
+            {
+                setLevel((prev)=>{
+                    console.log(prev+1)
+                    return prev+1;
+                })
+            }
+            return newClearLine
+        })
+        setScore((prev)=>{
+            if(clearLine === 1)
+            {
+                return prev + 100;
+            }
+            else if(clearLine === 2)
+            {
+                return prev + 300;
+            }
+            else if(clearLine === 3)
+            {
+                return prev + 500;
+            }
+            else
+            {
+                return prev + 800;
+            }
+        })
+    }
+
     return (
-        <div>
+        
+        <div className="game-component-panel">
+            <PaintScore score = {score} clearLine = {clearLine} level = {level}/>
             <PaintTetris board  = {board} nowBrick = {nowBrick} nowBrickType = {nowBrickType}/>
+            <PaintNextBrick nextBrickType = {nextBrick}/>
         </div>
     )
 }

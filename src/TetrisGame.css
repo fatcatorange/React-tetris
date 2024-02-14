@@ -13,7 +13,6 @@
     border-style: solid;
     border-width: 1px;
     border-color: black;
-    transition-duration: 1s;
 }
 
 .I-brick{
@@ -22,8 +21,7 @@
     border-style: solid;
     border-width: 1px;
     border-color: black;
-    transition-duration: 1s;
-    border-radius: 10%;
+    border-radius: 50%;
 }
 
 .J-brick{
@@ -32,8 +30,7 @@
     border-style: solid;
     border-width: 1px;
     border-color: black;
-    transition-duration: 1s;
-    border-radius: 10%;
+    border-radius: 50%;
 }
 
 .L-brick{
@@ -42,8 +39,7 @@
     border-style: solid;
     border-width: 1px;
     border-color: black;
-    transition-duration: 1s;
-    border-radius: 10%;
+    border-radius: 50%;
 }
 
 .O-brick{
@@ -52,8 +48,7 @@
     border-style: solid;
     border-width: 1px;
     border-color: black;
-    transition-duration: 1s;
-    border-radius: 10%;
+    border-radius: 50%;
 }
 
 .S-brick{
@@ -62,8 +57,7 @@
     border-style: solid;
     border-width: 1px;
     border-color: black;
-    transition-duration: 1s;
-    border-radius: 10%;
+    border-radius: 50%;
 }
 
 .Z-brick{
@@ -72,8 +66,7 @@
     border-style: solid;
     border-width: 1px;
     border-color: black;
-    transition-duration: 1s;
-    border-radius: 10%;
+    border-radius: 50%;
 }
 
 .T-brick{
@@ -82,19 +75,24 @@
     border-style: solid;
     border-width: 1px;
     border-color: black;
-    transition-duration: 1s;
-    border-radius: 10%;
+    border-radius: 50%;
 }
 
 .clean-brick{
     height:auto;
     border-style: solid;
     border-width: 1px;
+    border-radius: 50%;
     border-color: black;
-    animation: fadeInAnimation 1s ;
+    animation: fadeInAnimation 700ms ;
     
 }
 
+.game-component-panel{
+    display: grid;
+    grid-template-columns: 1fr 300px 1fr;
+    padding:100px;
+}
 
 .game-board{
     display: grid;
@@ -120,4 +118,15 @@
 
 .visible{
     opacity: 1;
+}
+
+.nextBrickDisplay{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    margin-left:50px;
+    margin-top:50px;
+    margin-right:auto;
+    width: 100px;
+    height: 120px;
+    background-color: black;
 }
