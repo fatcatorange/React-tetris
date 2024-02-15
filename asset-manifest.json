@@ -1,16 +1,19 @@
 {
   "files": {
-    "main.css": "/React-tetris/static/css/main.c28cf5de.css",
-    "main.js": "/React-tetris/static/js/main.e596dbb0.js",
+    "main.css": "/React-tetris/static/css/main.30d198c4.css",
+    "main.js": "/React-tetris/static/js/main.2b7158a4.js",
     "static/js/592.aa0e61ab.chunk.js": "/React-tetris/static/js/592.aa0e61ab.chunk.js",
+    "static/media/tetris-logo.png": "/React-tetris/static/media/tetris-logo.80666883e408a1017c66.png",
+    "static/media/play.png": "/React-tetris/static/media/play.51ba09e18faa892b7de9.png",
+    "static/media/pause.png": "/React-tetris/static/media/pause.818a83cd3a0c4b7f08d3.png",
     "static/media/logo.svg": "/React-tetris/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/React-tetris/index.html",
-    "main.c28cf5de.css.map": "/React-tetris/static/css/main.c28cf5de.css.map",
-    "main.e596dbb0.js.map": "/React-tetris/static/js/main.e596dbb0.js.map",
+    "main.30d198c4.css.map": "/React-tetris/static/css/main.30d198c4.css.map",
+    "main.2b7158a4.js.map": "/React-tetris/static/js/main.2b7158a4.js.map",
     "592.aa0e61ab.chunk.js.map": "/React-tetris/static/js/592.aa0e61ab.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.c28cf5de.css",
-    "static/js/main.e596dbb0.js"
+    "static/css/main.30d198c4.css",
+    "static/js/main.2b7158a4.js"
   ]
 }
