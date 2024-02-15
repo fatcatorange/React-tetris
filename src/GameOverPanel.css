@@ -1,0 +1,12 @@
+.reset-button{
+    margin-top: 50px;
+    text-align: center;
+    height: 50px;
+    margin:20px;
+}
+
+.button-panel{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding:20px;
+}

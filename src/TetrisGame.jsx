@@ -3,6 +3,9 @@ import PaintTetris from "./PaintTetris";
 import './TetrisGame.css'
 import PaintNextBrick from "./PaintNextBrick";
 import PaintScore from "./PaintScore";
+import GameOverPanel from "./GameOverPanel";
+import PauseButton from "./PauseButton";
+import tetrisTitleImage from "./image/tetris-logo.png"
 
 export default function TetrisGame(){
     const [board,setBoard] = React.useState(()=>{
@@ -32,6 +35,8 @@ export default function TetrisGame(){
     const [score,setScore] = React.useState(0)
     const [clearLine,setClearLine] = React.useState(0)
     const [level,setLevel] = React.useState(1)
+    const [dead,setDead] = React.useState(false)
+    const [pause,setPause] = React.useState(false)
     const downMoveTime = 500
     const minimumDownSpeed = 100
     const maximumDownSpeed = 1000;
@@ -39,7 +44,7 @@ export default function TetrisGame(){
     React.useEffect(()=>{
             const intervalID = setInterval(function(){
                 setCleaning((prev) => {
-                    if(prev === false)
+                    if(prev === false && pause === false)
                     {
                         dropBrick()
                     }
@@ -47,8 +52,42 @@ export default function TetrisGame(){
                 })
         },Math.max(maximumDownSpeed - ((level-1) * 100),minimumDownSpeed))
         return ()=>clearInterval(intervalID)
-    },[level])
+    },[level,pause])
     
+    function pauseGame(){
+        setPause(prev=>(!prev));
+    }
+
+    function resetGame(){
+        setBoard(()=>{
+            let tempBoard = []
+            for(let i =0;i<20;i++)
+            {
+                let tempBoardInside = []
+                for(let j=0;j<10;j++)
+                {
+                    tempBoardInside.push(0)
+                }
+                tempBoard.push(tempBoardInside)
+            }
+            return tempBoard
+        })
+        setNowBrick([[0,5],[1,4],[1,5],[1,6]])
+        setCleaning(false)
+        setBrickType([[[0,5],[1,5],[2,5],[3,5]],[[0,4],[0,5],[1,4],[1,5]],
+            [[0,5],[1,5],[2,5],[2,4]],[[0,4],[1,4],[2,4],[2,5]],
+            [[0,5],[0,4],[1,4],[1,3]],[[0,4],[0,5],[1,5],[1,6]],[[0,5],[1,4],[1,5],[1,6]]])
+        setNowBrickType(6)
+        setNowBrickDir(0)
+        setNextBrick(1)
+        setCanRotate(true)
+        setDownMove(true)
+        setScore(0)
+        setClearLine(0)
+        setLevel(1)
+        setDead(false)
+        setPause(false)
+    }
 
     function dropBrick(){
         setNowBrick((prev)=>{
@@ -70,9 +109,13 @@ export default function TetrisGame(){
         
     }
 
-    React.useEffect(checkDownBrick,[nowBrick])
+    React.useEffect(checkDownBrick,[nowBrick,pause])
 
     function checkDownBrick(){
+        if(pause === true)
+        {
+            return;
+        }
         //console.log(nowBrick)
         for(let i=0;i<nowBrick.length;i++)
         {
@@ -114,32 +157,52 @@ export default function TetrisGame(){
     function generateNewBrick(){
         //console.log(brickType)
         const randomNumber = Math.floor(Math.random() * brickType.length);
+        checkDead(brickType[nextBrick])
         setNowBrickType(nextBrick)
         const temp = brickType[nextBrick].map(element=>(element))
         setNextBrick(randomNumber)
         setNowBrickDir(0)
         return temp;
     }
+
+    function checkDead(newBrick){
+        setBoard((prev)=>{
+            for(let i=0;i<newBrick.length;i++)
+            {
+               if(prev[newBrick[i][0]][newBrick[i][1]] != 0)
+               {
+                    setDead(true);
+                    setPause(true);
+               } 
+            }
+            return prev;
+        })
+        
+    }
     
 
     React.useEffect(() => {
         const handleKeyDown = (event) => {
-          if (event.key === "ArrowUp" ) {
-            rotateBrick();
-          } else if (event.key === "ArrowDown" && cleaning === false) {
-            moveDown();
-          } else if (event.key === "ArrowLeft" && downMove === true) {
-            moveLeft();
-          } else if (event.key === "ArrowRight" && downMove === true) {
-            moveRight();
-          }
+            if(pause === true)
+            {
+                return;
+            }
+            if (event.key === "ArrowUp" ) {
+                rotateBrick();
+            } else if (event.key === "ArrowDown" && cleaning === false) {
+                moveDown();
+            } else if (event.key === "ArrowLeft" && downMove === true) {
+                moveLeft();
+            } else if (event.key === "ArrowRight" && downMove === true) {
+                moveRight();
+            }
         };
     
         window.addEventListener("keydown", handleKeyDown);
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
         };
-    }, [nowBrick,cleaning,nowBrickDir,nowBrickType,downMove]);
+    }, [nowBrick,cleaning,nowBrickDir,nowBrickType,downMove,pause]);
 
     function checkValidRotate(prev,temp,nowBrickDir){
         for(let i=0;i<4;i++)
@@ -744,11 +807,22 @@ export default function TetrisGame(){
     }
 
     return (
-        
-        <div className="game-component-panel">
-            <PaintScore score = {score} clearLine = {clearLine} level = {level}/>
-            <PaintTetris board  = {board} nowBrick = {nowBrick} nowBrickType = {nowBrickType}/>
-            <PaintNextBrick nextBrickType = {nextBrick}/>
+        <div className="game-panel">
+            <div className="tetris-title">
+                <div></div>
+                <img src={tetrisTitleImage} className="tetris-logo" />
+                <div></div>
+            </div>
+            <div className="game-component-panel">
+                <PaintScore score = {score} clearLine = {clearLine} level = {level}/>
+                <PaintTetris board  = {board} nowBrick = {nowBrick} nowBrickType = {nowBrickType}/>
+                <div>
+                    <PauseButton pauseGame = {pauseGame} pause = {pause}/>
+                    <PaintNextBrick nextBrickType = {nextBrick}/>
+                </div>
+            </div>
+            {dead === true && <GameOverPanel resetGame = {resetGame}/>}
         </div>
+        
     )
 }

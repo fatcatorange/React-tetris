@@ -59,6 +59,41 @@ export default function PaintTetris(props){
         }
     }
 
+
+    let downBrick = props.nowBrick.map((element) => [element[0],element[1]])
+    while(1)
+    {
+        let check = false;
+        for(let i=0;i<downBrick.length;i++)
+        {
+            if(downBrick[i][0] + 1 >= 20 || props.board[downBrick[i][0] + 1][downBrick[i][1]] != 0)
+            {
+                check = true;
+                break;
+            }
+        }
+        if(check === true)
+        {
+            for(let i=0;i<downBrick.length;i++)
+            {
+                const index = 10 * downBrick[i][0] + downBrick[i][1];
+                if(props.board[downBrick[i][0]][downBrick[i][1]] === 0)
+                    allBrick[index] = (<div key={index} className="white-brick"></div>);
+                else
+                {
+                    break;
+                }
+            }
+            break;
+        }
+        else
+        {
+            for(let i=0;i<downBrick.length;i++)
+            {
+                downBrick[i][0]+=1;
+            }
+        }
+    }
     for(let i=0;i<props.nowBrick.length;i++)
     {
         const rowIndex = props.nowBrick[i][0];
@@ -99,6 +134,8 @@ export default function PaintTetris(props){
         //console.log(rowIndex,colIndex)
     }
 
+
+    
     //console.log(props.board)
     return (<div className="game-board">
         {allBrick}
