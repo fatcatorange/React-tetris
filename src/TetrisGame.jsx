@@ -7,7 +7,7 @@ import GameOverPanel from "./GameOverPanel";
 import PauseButton from "./PauseButton";
 import tetrisTitleImage from "./image/tetris-logo.png"
 
-export default function TetrisGame(){
+export default function TetrisGame(props){
     const [board,setBoard] = React.useState(()=>{
         let tempBoard = []
         for(let i =0;i<20;i++)
@@ -196,6 +196,10 @@ export default function TetrisGame(){
             } else if (event.key === "ArrowRight" && downMove === true) {
                 moveRight();
             }
+            else if (event.code === 'Space') {
+                downToBottom();
+            }
+            
         };
     
         window.addEventListener("keydown", handleKeyDown);
@@ -203,6 +207,36 @@ export default function TetrisGame(){
             window.removeEventListener("keydown", handleKeyDown);
         };
     }, [nowBrick,cleaning,nowBrickDir,nowBrickType,downMove,pause]);
+
+    function downToBottom(){
+        let downBrick = nowBrick.map((element) => [element[0],element[1]])
+        while(1)
+        {
+            let check = false;
+            for(let i=0;i<downBrick.length;i++)
+            {
+                if(downBrick[i][0] + 1 >= 20 || board[downBrick[i][0] + 1][downBrick[i][1]] != 0)
+                {
+                    check = true;
+                    break;
+                }
+            }
+            if(check === true)
+            {
+                setNowBrick(downBrick)
+                setCleaning(true)
+                setNewBrick()
+                break;
+            }
+            else
+            {
+                for(let i=0;i<downBrick.length;i++)
+                {
+                    downBrick[i][0]+=1;
+                }
+            }
+        }
+    }
 
     function checkValidRotate(prev,temp,nowBrickDir){
         for(let i=0;i<4;i++)
@@ -821,7 +855,7 @@ export default function TetrisGame(){
                     <PaintNextBrick nextBrickType = {nextBrick}/>
                 </div>
             </div>
-            {dead === true && <GameOverPanel resetGame = {resetGame}/>}
+            {dead === true && <GameOverPanel resetGame = {resetGame} backToHomePage = {props.backToHomePage}/>}
         </div>
         
     )

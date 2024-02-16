@@ -92,7 +92,7 @@
 .game-component-panel{
     position:relative;
     display: grid;
-    grid-template-columns: 1fr 256px 1fr;
+    grid-template-columns: 1fr 35vh 1fr;
     padding-top: 50px;
 }
 
@@ -100,8 +100,8 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
 
-    width: 250px;
-    height: 500px;
+    width: 35vh;
+    height: 70vh;
     background-color: black;
     border-style: solid;
     border-color: black;
@@ -139,7 +139,7 @@
 }
 
 .tetris-logo{
-    
+    height: 15vh;
 }
 
 .game-over-panel{
