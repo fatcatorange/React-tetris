@@ -78,7 +78,7 @@ export default function PaintTetris(props){
             {
                 const index = 10 * downBrick[i][0] + downBrick[i][1];
                 if(props.board[downBrick[i][0]][downBrick[i][1]] === 0)
-                    allBrick[index] = (<div key={index} className="white-brick"></div>);
+                    allBrick[index] = (<div key={downBrick[i][0] + "," + downBrick[i][1]} className="white-brick"></div>);
                 else
                 {
                     break;
@@ -103,31 +103,31 @@ export default function PaintTetris(props){
             const index = 10 * rowIndex + colIndex;
             if(props.nowBrickType === 0)
             {
-                allBrick[index] = (<div key={index} className="I-brick"></div>);
+                allBrick[index] = (<div key={rowIndex+","+colIndex} className="I-brick"></div>);
             }
             else if(props.nowBrickType === 1)
             {
-                allBrick[index] = (<div key={index} className="O-brick"></div>);
+                allBrick[index] = (<div key={rowIndex+","+colIndex} className="O-brick"></div>);
             }
             else if(props.nowBrickType === 2)
             {
-                allBrick[index] = (<div key={index} className="J-brick"></div>);
+                allBrick[index] = (<div key={rowIndex+","+colIndex} className="J-brick"></div>);
             }
             else if(props.nowBrickType === 3)
             {
-                allBrick[index] = (<div key={index} className="L-brick"></div>);
+                allBrick[index] = (<div key={rowIndex+","+colIndex} className="L-brick"></div>);
             }
             else if(props.nowBrickType === 4)
             {
-                allBrick[index] = (<div key={index} className="S-brick"></div>);
+                allBrick[index] = (<div key={rowIndex+","+colIndex} className="S-brick"></div>);
             }
             else if(props.nowBrickType === 5)
             {
-                allBrick[index] = (<div key={index} className="Z-brick"></div>);
+                allBrick[index] = (<div key={rowIndex+","+colIndex} className="Z-brick"></div>);
             }
             else 
             {
-                allBrick[index] = (<div key={index} className="T-brick"></div>);
+                allBrick[index] = (<div key={rowIndex+","+colIndex} className="T-brick"></div>);
             }
             
         }

@@ -1,0 +1,29 @@
+.first-player-panel{
+    position:relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding:10px;
+    padding-top: 50px;
+    border-style: solid;
+    border-radius: 10px;
+}
+
+.multiPlayerModePanel{
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr 2fr 1fr;
+}
+.nextBrickContainer{
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding-right:5vw;
+}
+
+.second-player-panel{
+    position:relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    padding:10px;
+    padding-top: 50px;
+    border-style: solid;
+    border-radius: 10px;
+}

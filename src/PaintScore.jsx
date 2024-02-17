@@ -6,7 +6,7 @@ export default function PaintScore(props){
     return (
     <div className="score-and-level-container">
         <div className="score-panel">score:{props.score}</div>
-        <div className="cleanLine-panel">clean line:{props.clearLine}</div>
-        <div className="level-panel">level:{props.level}</div>
+        {props.opponent === false && <div className="cleanLine-panel">line:{props.clearLine}</div>}
+        {props.opponent === false && <div className="level-panel">level:{props.level}</div>}
     </div>)
 }

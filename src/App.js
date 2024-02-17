@@ -3,9 +3,12 @@ import React from 'react';
 import './App.css';
 import HomePage from './HomePage';
 import WaitingPage from './waitingPage';
+import MultiplayerGame from './MultiplayerGame'
 
 function App() {
   const [nowPage,setNowPage] = React.useState("homePage")
+  const [roomID,setRoomID] = React.useState("")
+  const [playerID,setPlayerID] = React.useState("")
   const [multiPlayerID,setMultiPlayerID] = React.useState("");
   let page;
   if(nowPage === "homePage")
@@ -18,11 +21,12 @@ function App() {
   }
   else if(nowPage === "waitingForMatch")
   {
-    page = <WaitingPage backToHomePage = {()=>(setNowPage("homePage"))} startMultiplayerMode = {()=>(setNowPage("homePage"))}/>
+    page = <WaitingPage backToHomePage = {()=>(setNowPage("homePage"))} startMultiplayerMode = {()=>(setNowPage("startMultiplayerMode"))}
+                        setRoomID = {(id)=>setRoomID(id)} setPlayerID = {(id)=>setPlayerID(id)}/>
   }
   else if(nowPage === "startMultiplayerMode")
   {
-
+    page = <MultiplayerGame playerID = {playerID} roomID = {roomID}/>
   }
   return (
     page

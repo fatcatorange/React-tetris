@@ -1,7 +1,7 @@
 .score-panel{
     background-color: black;
     color:white;
-    width: 200px;
+    width: 15vw;
     height:80px;
     margin:auto;
     font-size: 25px;
@@ -17,7 +17,7 @@
 .cleanLine-panel{
     background-color: black;
     color:white;
-    width: 200px;
+    width: 15vw;
     height:80px;
     margin:auto;
     font-size: 25px;
@@ -33,7 +33,7 @@
 .level-panel{
     background-color: black;
     color:white;
-    width: 200px;
+    width: 15vw;
     height:80px;
     margin:auto;
     font-size: 25px;

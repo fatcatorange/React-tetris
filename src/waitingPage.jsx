@@ -20,9 +20,11 @@ import {
 export default function WaitingPage(props){
 
     let finding = false;
-
+    const unsubRef = React.useRef(null);
+    let unsub = ()=>{};
+    unsubRef.current = unsub;
     React.useEffect(()=>{
-        let unsub = ()=>{};
+
         getDocs(collection(db,"waitingList"))
         .then((waitingList)=>{
             if(finding === true)
@@ -32,15 +34,29 @@ export default function WaitingPage(props){
             finding = true
             if(waitingList.docs.length === 0)
             {
+                let cleanBrick = []
+                for(let i=0;i<20;i++)
+                {
+                    for(let j=0;j<10;j++)
+                    {
+                        cleanBrick.push(0)
+                    }
+                }
                 const gameRoomItem = {
-                    user1:"jimmy",
-                    user2:"hank"
+                    player1Board:cleanBrick,
+                    player2Board:cleanBrick,
+                    player1Score:0,
+                    player2Score:0,
+                    player1Dead:false,
+                    player2Dead:false
                 }
                 addDoc(collection(db,"gameRoom"),gameRoomItem)
                 .then((roomID)=>{
                     const waitingItem = {
                         roomID:roomID.id,
                     }
+                    props.setRoomID(roomID.id)
+                    props.setPlayerID(1)
                     addDoc(collection(db,"waitingList"),waitingItem)
                     .then((waitingRoomID)=>{
                         const unsubscribe = onSnapshot(waitingListCollection, function (snapshot){
@@ -50,19 +66,26 @@ export default function WaitingPage(props){
                             .then((findDoc)=>{
                                 if(findDoc.exists() === false)
                                 {
-                                    unsubscribe();
                                     props.startMultiplayerMode();
                                 }
                             })
                         })
-                        
+                        unsubRef.current = ()=>{
+                            unsubscribe()
+                            const findRef = doc(db,"waitingList",waitingRoomID.id)
+                            deleteDoc(findRef)
+                            .then()
+                        }
                     })
+                    
                 })
                 
             }
             else
             {
                 const roomID = waitingList.docs[0].id;
+                props.setRoomID(waitingList.docs[0].data().roomID)
+                props.setPlayerID(2)
                 const docRef = doc(db,"waitingList",roomID)
                 deleteDoc(docRef)
                 .then(()=>{
@@ -70,14 +93,19 @@ export default function WaitingPage(props){
                 })
             }
         })
-        return unsub;
+        return ()=>(unsubRef.current());
     },[])
+
+    function backToHomePage(){
+        unsubRef.current();
+        props.backToHomePage();
+    }
 
     return (
         <div>
             <div className="tetris-title">
                 <div className="button-container">
-                    <button className="back-button" onClick={props.backToHomePage}>back to home page</button>
+                    <button className="back-button" onClick={backToHomePage}>back to home page</button>
                 </div>
                 <img src={TetrisLogo} className="tetris-logo" />
                 <div></div>
