@@ -48,7 +48,9 @@ export default function WaitingPage(props){
                     player1Score:0,
                     player2Score:0,
                     player1Dead:false,
-                    player2Dead:false
+                    player2Dead:false,
+                    player1Rematch:0, //0 for init,1 for confirm, 2 for reject
+                    player2Rematch:0,
                 }
                 addDoc(collection(db,"gameRoom"),gameRoomItem)
                 .then((roomID)=>{

@@ -26,7 +26,7 @@ function App() {
   }
   else if(nowPage === "startMultiplayerMode")
   {
-    page = <MultiplayerGame playerID = {playerID} roomID = {roomID}/>
+    page = <MultiplayerGame playerID = {playerID} roomID = {roomID} backToHomePage = {()=>(setNowPage("homePage"))}/>
   }
   return (
     page

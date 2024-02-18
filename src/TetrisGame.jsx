@@ -848,7 +848,7 @@ export default function TetrisGame(props){
                 <div></div>
             </div>
             <div className="game-component-panel">
-                <PaintScore score = {score} clearLine = {clearLine} level = {level}/>
+                <PaintScore score = {score} clearLine = {clearLine} level = {level} opponent = {false}/>
                 <PaintTetris board  = {board} nowBrick = {nowBrick} nowBrickType = {nowBrickType}/>
                 <div>
                     <PauseButton pauseGame = {pauseGame} pause = {pause}/>

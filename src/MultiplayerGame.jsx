@@ -8,6 +8,8 @@ import PauseButton from "./PauseButton";
 import tetrisTitleImage from "./image/tetris-logo.png"
 import { waitingListCollection,gameRoomColloection, db } from "./firebase"
 import './MultiplayerGame.css'
+import MultiPlayerGameOverPanel from "./MultiPlayerGameOverPanel";
+import BackToHome from "./BackToHome";
 import PaintOpponentBoard from "./PaintOpponentBoard";
 import {
     onSnapshot,
@@ -55,6 +57,9 @@ export default function TetrisGame(props){
     const [dead,setDead] = React.useState(false)
     const [pause,setPause] = React.useState(false)
     const [opponentScore,setOpponentScore] = React.useState(0)
+    const [opponentDead,setOpponentDead] = React.useState(false);
+    const [selfRematch,setSelfRematch] = React.useState(0);
+    const [opponentRematch,setOpponentRematch] = React.useState(0);
     const downMoveTime = 500
     const minimumDownSpeed = 100
     const maximumDownSpeed = 1000;
@@ -119,22 +124,41 @@ export default function TetrisGame(props){
                 {
                     setOpponentScore(snapshot.data().player2Score)
                 }
-           }
-           else
-           {
-            if(snapshot.data().player1Board != undefined)
-            {
-                setOpponentBoard(snapshot.data().player1Board)
-                if(snapshot.data().player1Score != undefined)
+                if(snapshot.data().player2Dead != undefined)
                 {
-                    setOpponentScore(snapshot.data().player1Score)
+                    setOpponentDead(snapshot.data().player2Dead);
                 }
-            }
+                if(snapshot.data().player2Rematch != undefined)
+                {
+                    setOpponentRematch(snapshot.data().player2Rematch);
+                }
+           }
+           else if(props.playerID === 2 && snapshot.data().player1Board != undefined)
+           {
+               setOpponentBoard(snapshot.data().player1Board)
+               if(snapshot.data().player1Score != undefined)
+               {
+                   setOpponentScore(snapshot.data().player1Score)
+               }
+               if(snapshot.data().player1Dead != undefined)
+               {
+                   setOpponentDead(snapshot.data().player1Dead);
+               }
+               if(snapshot.data().player1Rematch != undefined)
+                {
+                    setOpponentRematch(snapshot.data().player1Rematch);
+                }
            }
         })
         return unsubscribe
     },[])
 
+    React.useEffect(()=>{
+        if(opponentRematch === 1 && selfRematch === 1)
+        {
+            resetGame();
+        }
+    },[opponentRematch,selfRematch])
 
 
     React.useEffect(()=>{
@@ -183,6 +207,22 @@ export default function TetrisGame(props){
         setLevel(1)
         setDead(false)
         setPause(false)
+        setOpponentBoard(false)
+        setOpponentDead(false)
+        setSelfRematch(0)
+        setOpponentRematch(0)
+        if(props.playerID === 1)
+        {
+            const docRef = doc(db,"gameRoom",props.roomID)
+            setDoc(docRef,{player1Rematch:0,player1Dead: false},{merge:true})
+            .then()
+        }
+        else
+        {
+            const docRef = doc(db,"gameRoom",props.roomID)
+            setDoc(docRef,{player2Rematch:0,player2Dead: false},{merge:true})
+            .then()
+        }        
     }
 
     function dropBrick(){
@@ -269,6 +309,16 @@ export default function TetrisGame(props){
                {
                     setDead(true);
                     setPause(true);
+                    if(props.playerID === 1)
+                    {
+                        const docRef = doc(db,"gameRoom",props.roomID)
+                        setDoc(docRef,{player1Dead:true},{merge:true})
+                    }
+                    else
+                    {
+                        const docRef = doc(db,"gameRoom",props.roomID)
+                        setDoc(docRef,{player2Dead:true},{merge:true})
+                    }
                } 
             }
             return prev;
@@ -936,6 +986,38 @@ export default function TetrisGame(props){
         })
     }
 
+    function quit(){
+        if(props.playerID === 1)
+        {
+            const docRef = doc(db,"gameRoom",props.roomID)
+            setDoc(docRef,{player1Rematch:2},{merge:true})
+            .then(props.backToHomePage())
+        }
+        else
+        {
+            const docRef = doc(db,"gameRoom",props.roomID)
+            setDoc(docRef,{player2Rematch:2},{merge:true})
+            .then(props.backToHomePage())
+        }        
+    }
+
+    function rematch(){
+        if(props.playerID === 1)
+        {
+            console.log("rematch!")
+            const docRef = doc(db,"gameRoom",props.roomID)
+            setDoc(docRef,{player1Rematch:1},{merge:true})
+            .then(setSelfRematch(1))
+        }
+        else
+        {
+            console.log("rematch!")
+            const docRef = doc(db,"gameRoom",props.roomID)
+            setDoc(docRef,{player2Rematch:1},{merge:true})
+            .then(setSelfRematch(1))
+        }        
+    }
+
     return (
         <div className="game-panel">
             <div className="tetris-title">
@@ -956,8 +1038,8 @@ export default function TetrisGame(props){
                     <PaintTetris board  = {board} nowBrick = {nowBrick} nowBrickType = {nowBrickType}/>
                 </div>
                 <div></div>
-                {dead === true && <GameOverPanel resetGame = {resetGame} backToHomePage = {props.backToHomePage}/>}
-                
+                {dead === true && opponentDead === true && selfRematch != 1 && <MultiPlayerGameOverPanel score = {score} opponentScore = {opponentScore} quit = {quit} rematch = {rematch}/>}
+                {selfRematch === 1  && opponentRematch === 2 && <BackToHome quit = {quit}/>}
                 <div className="second-player-panel">
                     <div>
                         <PaintScore score = {opponentScore} clearLine = {clearLine} level = {level} opponent = {true}/>
