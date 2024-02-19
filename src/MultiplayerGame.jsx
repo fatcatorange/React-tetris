@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import PaintTetris from "./PaintTetris";
 import './TetrisGame.css'
 import PaintNextBrick from "./PaintNextBrick";
@@ -41,7 +41,7 @@ export default function TetrisGame(props){
         }
         return tempBoard
     });
-    const gameTime = 10;
+    const gameTime = 180;
     const [nowBrick,setNowBrick] = React.useState([[0,5],[1,4],[1,5],[1,6]])
     const [cleaning,setCleaning] = React.useState(false)
     const [brickType,setBrickType] = React.useState([[[0,5],[1,5],[2,5],[3,5]],[[0,4],[0,5],[1,4],[1,5]],
@@ -85,7 +85,7 @@ export default function TetrisGame(props){
     function timer(){
        setInterval(()=>{
         setRemainTime((prev)=>{
-            if(prev > 0)
+            if(prev > 0 )
             {
                 return prev-1;
             }
@@ -1036,6 +1036,7 @@ export default function TetrisGame(props){
     function quit(){
         if(opponentRematch === 2)
         {
+            console.log("!")
             unsubRef.current()
             const docRef = doc(db,"gameRoom",props.roomID)
             deleteDoc(docRef).then(props.backToHomePage())
@@ -1043,13 +1044,13 @@ export default function TetrisGame(props){
         else if(props.playerID === 1)
         {
             const docRef = doc(db,"gameRoom",props.roomID)
-            setDoc(docRef,{player1Rematch:2},{merge:true})
+            setDoc(docRef,{player1Rematch:2,player1Dead:true},{merge:true})
             .then(props.backToHomePage())
         }
         else if(props.playerID === 2)
         {
             const docRef = doc(db,"gameRoom",props.roomID)
-            setDoc(docRef,{player2Rematch:2},{merge:true})
+            setDoc(docRef,{player2Rematch:2,player2Dead:true},{merge:true})
             .then(props.backToHomePage())
         }        
     }
@@ -1068,6 +1069,15 @@ export default function TetrisGame(props){
             .then(setSelfRematch(1))
         }        
     }
+
+
+    useEffect(()=>{
+        window.addEventListener('beforeunload',quit)
+
+        return ()=>{
+            window.removeEventListener('beforeunload',quit)
+        };
+    },[opponentRematch])
 
     return (
         <div className="game-panel">
@@ -1092,8 +1102,9 @@ export default function TetrisGame(props){
                 </div>
                 </div>
                 
-                <div>
-                    {remainTime}
+                <div className="time-panel">
+                    timer<br/>
+                    {(dead === false || opponentDead === false) && remainTime}
                 </div>
                 {dead === true && opponentDead === true && selfRematch != 1 && <MultiPlayerGameOverPanel score = {score} opponentScore = {opponentScore} quit = {quit} rematch = {rematch}/>}
                 {selfRematch === 1  && opponentRematch === 2 && <BackToHome quit = {quit}/>}

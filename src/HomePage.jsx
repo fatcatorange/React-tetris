@@ -20,6 +20,9 @@ export default function HomePage(props){
                     <button className="mode-button" onClick ={props.startMatching}>
                         multiplayer
                     </button>
+                    <button className="mode-button" onClick ={props.playWithFriend}>
+                        play with friend
+                    </button>
                 </div>
                 <div></div>
             </div>

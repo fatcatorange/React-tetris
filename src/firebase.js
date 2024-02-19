@@ -19,4 +19,5 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 export const db = getFirestore(app)
 export const waitingListCollection = collection(db, "waitingList")
+export const specialWaitingListCollection = collection(db, "specialWaitingList")
 export const gameRoomColloection = collection(db,"gameRoom")

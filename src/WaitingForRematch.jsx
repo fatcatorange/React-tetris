@@ -5,7 +5,7 @@ export default function WaitingForRematch(props){
 
   return (
     <div className="multiplayer-game-over-panel">
-        <div>等待對方回應...</div>
+        <div>Waiting for response...</div>
     </div>
   )
 }

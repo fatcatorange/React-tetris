@@ -103,10 +103,17 @@ export default function WaitingPage(props){
         props.backToHomePage();
     }
 
+    React.useEffect(() => {
+        window.addEventListener('beforeunload', backToHomePage);
+        return () => {
+            window.removeEventListener('beforeunload', backToHomePage);
+        };
+    }, []);
+
     return (
         <div>
             <div className="tetris-title">
-                <div className="button-container">
+                <div>
                     <button className="back-button" onClick={backToHomePage}>back to home page</button>
                 </div>
                 <img src={TetrisLogo} className="tetris-logo" />
